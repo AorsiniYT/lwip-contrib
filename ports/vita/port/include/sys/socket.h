@@ -1,7 +1,12 @@
 #ifndef _SYS_SOCKET_H_
 #define _SYS_SOCKET_H_
 
+#ifndef __PSVITA__
 #include <lwip/sockets.h>
+#else
+/* PSVita uses VitaSDK sockets directly */
+#include <psp2/net/net.h>
+#endif
 
 // Add missing constants
 #define AF_UNIX 1
@@ -10,6 +15,7 @@
 #define IP_ADD_MEMBERSHIP 35
 #define IP_DROP_MEMBERSHIP 36
 
+#ifndef __PSVITA__
 // Typedef for ZeroTier sockaddr (forward declared)
 typedef struct sockaddr ZeroTier_sockaddr;
 
@@ -44,6 +50,26 @@ inline ssize_t send(int sockfd, const void *buf, size_t len, int flags) {
 inline ssize_t recv(int sockfd, void *buf, size_t len, int flags) {
     return lwip_recv(sockfd, buf, len, flags);
 }
+#else
+/* PSVita uses VitaSDK socket functions directly (mapped via socket_psvita.h macros) */
+typedef struct sockaddr ZeroTier_sockaddr;
+
+#define socket(domain, type, protocol) sceNetSocket(NULL, domain, type, protocol)
+#define bind(sockfd, addr, addrlen) sceNetBind(sockfd, (SceNetSockaddr*)(addr), addrlen)
+#define connect(sockfd, addr, addrlen) sceNetConnect(sockfd, (SceNetSockaddr*)(addr), addrlen)
+#define accept(sockfd, addr, addrlen) sceNetAccept(sockfd, (SceNetSockaddr*)(addr), addrlen)
+#define listen(sockfd, backlog) sceNetListen(sockfd, backlog)
+#define send(sockfd, buf, len, flags) sceNetSend(sockfd, buf, len, flags)
+#define recv(sockfd, buf, len, flags) sceNetRecv(sockfd, buf, len, flags)
+#define sendto(sockfd, buf, len, flags, dest_addr, addrlen) sceNetSendto(sockfd, buf, len, flags, (SceNetSockaddr*)(dest_addr), addrlen)
+#define recvfrom(sockfd, buf, len, flags, src_addr, addrlen) sceNetRecvfrom(sockfd, buf, len, flags, (SceNetSockaddr*)(src_addr), addrlen)
+#define setsockopt(sockfd, level, optname, optval, optlen) sceNetSetsockopt(sockfd, level, optname, optval, optlen)
+#define getsockopt(sockfd, level, optname, optval, optlen) sceNetGetsockopt(sockfd, level, optname, optval, optlen)
+#define getsockname(sockfd, addr, addrlen) sceNetGetsockname(sockfd, (SceNetSockaddr*)(addr), addrlen)
+#define getpeername(sockfd, addr, addrlen) sceNetGetpeername(sockfd, (SceNetSockaddr*)(addr), addrlen)
+#define select(nfds, readfds, writefds, exceptfds, timeout) (-1)
+#define ioctl(fd, request, argp) (-1)
+#endif
 
 // FD macros
 #ifndef FD_SET
