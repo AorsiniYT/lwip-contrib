@@ -1,4 +1,4 @@
-#include "netinet/in.h"
+#include <lwip/ip6.h>
 
-// IPv6 any address
-const struct in6_addr in6addr_any = {{{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0}}};
+// NOTE: ip6_addr_any is already defined in LwIP core
+// Nothing to define here

@@ -13,9 +13,9 @@
 #define LWIP_PBUF_REF_T u8_t
 #endif
 
-#include "Debug.hpp" // libzt
 #include <stddef.h>
 #include <stdint.h>
+#include <psp2/kernel/clib.h>  // For sceClibPrintf
 
 // Define PSVita platform
 #define LWIP_UNIX_VITA
@@ -47,7 +47,7 @@ typedef int pid_t;
 #endif
 
 // Comment out the following line to use lwIP's default diagnostic printing routine
-#define LWIP_PLATFORM_DIAG(x)    do {DEBUG_INFO x;} while(0)
+#define LWIP_PLATFORM_DIAG(x)    do {sceClibPrintf x;} while(0)
 
 struct sio_status_s;
 typedef struct sio_status_s sio_status_t;

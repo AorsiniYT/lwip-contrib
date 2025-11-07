@@ -1,19 +1,21 @@
 cmake_minimum_required(VERSION 3.10)
 
 # lwIP port for PSVita
-set(LWIP_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../../../../ext/lwip)
+set(LWIP_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../../../../lwip)
 
 # Include directories
 include_directories(${LWIP_DIR}/src/include)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include)
 
 # Source files for PSVita port
+# NOTE: socket.c and netinet_in.c are disabled because:
+# - socket.c defines functions already in LwIP (inet_ntop, inet_pton, htonl, etc)
+# - netinet_in.c tries to redefine IPv6 addresses
+# These are not needed for basic LwIP functionality
 set(lwip_port_src
     ${CMAKE_CURRENT_SOURCE_DIR}/sys_arch.c
     ${CMAKE_CURRENT_SOURCE_DIR}/strings.c
     ${CMAKE_CURRENT_SOURCE_DIR}/unistd.c
-    ${CMAKE_CURRENT_SOURCE_DIR}/netinet_in.c
-    ${CMAKE_CURRENT_SOURCE_DIR}/socket.c
 )
 
 # Add the port library

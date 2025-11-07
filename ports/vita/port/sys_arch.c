@@ -547,14 +547,14 @@ u32_t
 sys_arch_sem_wait(sys_sem_t *s, u32_t timeout)
 {
   SceUInt32 timeout_ms = (timeout == 0) ? 0xFFFFFFFF : timeout;
-  SceUInt32 start_time = sceKernelGetProcessTimeLow();
+  SceUInt64 start_time = sceKernelGetSystemTimeWide();
   int ret = sceKernelWaitSema(*s, 1, &timeout_ms);
 
   if (ret == SCE_KERNEL_ERROR_WAIT_TIMEOUT) {
     return SYS_ARCH_TIMEOUT;
   }
 
-  SceUInt32 end_time = sceKernelGetProcessTimeLow();
+  SceUInt64 end_time = sceKernelGetSystemTimeWide();
   return (end_time - start_time) / 1000; // Convert to milliseconds
 }
 
@@ -610,13 +610,13 @@ sys_mutex_free(sys_mutex_t *mutex)
 u32_t
 sys_now(void)
 {
-  return sceKernelGetProcessTimeLow() / 1000; // Convert to milliseconds
+  return (u32_t)(sceKernelGetSystemTimeWide() / 1000); // Convert microseconds to milliseconds
 }
 
 u32_t
 sys_jiffies(void)
 {
-  return sceKernelGetProcessTimeLow() / 1000;
+  return (u32_t)(sceKernelGetSystemTimeWide() / 1000);
 }
 
 /*-----------------------------------------------------------------------------------*/

@@ -31,6 +31,8 @@ int inet_pton(int af, const char *src, void *dst) {
 }
 
 // Network byte order conversion
+// NOTE: These are provided by LwIP macros, so we comment them out
+/*
 uint32_t htonl(uint32_t hostlong) {
     return ((hostlong >> 24) & 0xFF) |
            ((hostlong >> 8) & 0xFF00) |
@@ -49,6 +51,7 @@ uint32_t ntohl(uint32_t netlong) {
 uint16_t ntohs(uint16_t netshort) {
     return htons(netshort); // Same operation
 }
+*/
 
 // Thread-safe version of strtok
 char *strtok_r(char *str, const char *delim, char **saveptr) {
